@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerName": {
+            "value": "character-creator-api"
+        },
+        "location": {
+            "value": "westus"
+        },
+        "imageType": {
+            "value": "Private"
+        },
+        "imageName": {
+            "value": "charactercreator.azurecr.io/character-api:latest"
+        },
+        "osType": {
+            "value": "Linux"
+        },
+        "numberCpuCores": {
+            "value": "1"
+        },
+        "memory": {
+            "value": "1.5"
+        },
+        "restartPolicy": {
+            "value": "OnFailure"
+        },
+        "imageRegistryLoginServer": {
+            "value": "charactercreator.azurecr.io"
+        },
+        "imageUsername": {
+            "value": "charactercreator"
+        },
+        "imagePassword": {
+            "value": null
+        },
+        "environmentVariables": {
+            "value": [
+                {
+                    "name": "API_KEY",
+                    "value": "60598d64-00e6-4238-ae85-9bf96c244a8c"
+                }
+            ]
+        },
+        "ipAddressType": {
+            "value": "Public"
+        },
+        "ports": {
+            "value": [
+                {
+                    "port": "80",
+                    "protocol": "TCP"
+                }
+            ]
+        },
+        "dnsNameLabel": {
+            "value": "character-api"
+        }
+    }
+}
