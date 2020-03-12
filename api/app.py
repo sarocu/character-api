@@ -3,7 +3,7 @@ import io
 import logging
 import uuid
 from flask import Flask, request, send_file
-from flask_restplus import Api, Resource
+from flask_restx import Api, Resource
 from dotenv import load_dotenv, find_dotenv
 
 from decorators import require_key
@@ -26,8 +26,8 @@ class Resource(Resource):
 class CharacterCRUD(Resource):
     def get(self):
         _id = request.args.get("id")
-        return {"name":"Marty McFly", "id"_id}
+        return {"name":"Marty McFly", "id":_id}
 
     def post(self):
-        _id = uuid.uuid4()
+        _id = str(uuid.uuid4())
         return {"id":_id, "msg":"success"}

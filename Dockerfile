@@ -17,9 +17,6 @@ COPY requirements.txt /code/
 RUN pip3.7 install -r requirements.txt
 
 COPY api/* /code/api/
-COPY setup.py /code/
-
-RUN pip3.7 install -e /code/.
 
 RUN mkdir /gunicorn
 COPY gunicorn/* /gunicorn/
