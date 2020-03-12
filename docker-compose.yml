@@ -1,0 +1,14 @@
+version: "3"
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/code/api
+      - ./weather:/code/weather
+      - ./gunicorn:/gunicorn
+      - ./uploads:/code/uploads
+    command: /usr/local/bin/supervisord -c /gunicorn/supervisord.conf
