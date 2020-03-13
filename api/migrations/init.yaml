@@ -1,0 +1,12 @@
+init:
+  schemas:
+    - dungeonmaster
+  tables:
+    characters:
+      schema: dungeonmaster
+      attributes:
+        - id
+    equipment:
+      schema: dungeonmaster
+      attributes:
+        - id

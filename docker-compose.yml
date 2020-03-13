@@ -10,4 +10,19 @@ services:
       - ./api:/code/api
       - ./gunicorn:/gunicorn
       - ./uploads:/code/uploads
+    links:
+      - db
     command: /usr/local/bin/supervisord -c /gunicorn/supervisord.conf
+  db:
+    image: harperdb/hdb:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-harperdb
+      args:
+        INIT_HDB_USERNAME: ${DB_USER}
+        INIT_HDB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "9925:9925"
+    volumes:
+      - ./data:/opt/harperdb/hdb/
+      

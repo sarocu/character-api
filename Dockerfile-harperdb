@@ -1,0 +1,3 @@
+FROM harperdb/hdb:latest
+ARG INIT_HDB_USERNAME
+ARG INIT_HDB_PASSWORD

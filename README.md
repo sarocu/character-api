@@ -94,3 +94,15 @@ docker images
 docker tag 07b9057efb14 335664221718.dkr.ecr.us-west-2.amazonaws.com/weather-service
 docker push 335664221718.dkr.ecr.us-west-2.amazonaws.com/weather-service
 ```
+
+# HarperDB Migrations
+`db.py` serves as the connector to Harper in order to perform CRUD operations and migrations on the DB. Migrations are used to programmatically describe the structure of the database and changes; simple YAML files are used to configure a migration. 
+
+| Command | Description | Required Subcommands |
+|---------|-------------|----------------------|
+| `init` | Used to define the initial DB schemas and tables | `schema`, `table` |
+
+| Subcommand | Description | Required Params |
+|------------|-------------|-----------------|
+| `schemas` | Lists of schemas to create | `name` |
+| `table` | Creates a new DB table | `name`, `schema`, `attibutes` |

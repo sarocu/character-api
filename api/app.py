@@ -7,6 +7,7 @@ from flask_restx import Api, Resource
 from dotenv import load_dotenv, find_dotenv
 
 from decorators import require_key
+from models.character import Character
 
 load_dotenv(find_dotenv())
 
@@ -30,4 +31,6 @@ class CharacterCRUD(Resource):
 
     def post(self):
         _id = str(uuid.uuid4())
-        return {"id":_id, "msg":"success"}
+        new_character = Character()
+        msg = new_character.create({"name":"Sam McSam"})
+        return {"id":_id, "msg":msg}
