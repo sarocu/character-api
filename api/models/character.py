@@ -11,7 +11,14 @@ class Character(HarperModel):
     """
 
     def __init__(self):
+        # Declare the DB schema and table:
         super().__init__("dungeonmaster", "character")
+
+        # Declare the fields that must be present when a payload is assigned:
+        self.required_fields = ["name", "race", "classname"]
+
+    def __name__(self):
+        return "Character"
 
     @model_field("name")
     def name(self, value):
@@ -25,6 +32,6 @@ class Character(HarperModel):
     def race(self, value=None):
         return isinstance(value, str)
 
-    @model_field("class")
+    @model_field("classname")
     def classname(self, value=None):
         return isinstance(value, str)

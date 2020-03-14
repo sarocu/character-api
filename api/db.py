@@ -3,6 +3,9 @@ import os
 import yaml
 from functools import wraps
 import logging
+import uuid
+
+log = logging.getLogger("gunicorn.error")
 
 
 class HarperDB:
@@ -49,6 +52,7 @@ class HarperDB:
                 response.raise_for_status()
                 print("successfully created {}".format(table_name))
             except requests.exceptions.HTTPError as error:
+                log.error(error)
                 print(error)
 
     def insert(self, model_instance):
@@ -58,7 +62,28 @@ class HarperDB:
             - the payload and fields attributes will be used in the request body
             - this will fail if the model instance isn't valid
         """
-        pass
+        if model_instance.valid is False:
+            log.error(model_instance.payload)
+            return "Can't create: Invalid Model"
+
+        payload = {
+            "operation": "insert",
+            "schema": model_instance.schema,
+            "table": model_instance.table,
+            "records": [model_instance.payload],
+        }
+        try:
+            response = requests.post(self.base_url, json=payload, auth=self.auth)
+            response.raise_for_status()
+            return {
+                "response": "successfully created new {}".format(
+                    model_instance.__name__()
+                )
+            }
+        except requests.exceptions.HTTPError as error:
+            log.error(error)
+            log.error(payload)
+            return {"response": "error - could not persist"}
 
     def dispatch(self, migration):
         """
@@ -83,15 +108,41 @@ class HarperModel:
         self.fields = []
         self.valid = True
         self.payload = {}
+        self.required_fields = []
+        self._id = str(uuid.uuid4())
+        self.payload["id"] = self._id
+
+    def __name__(self):
+        return "HarperModel"
 
     def create(self, payload):
-        self.payload = payload
+        """
+        First check that the payload contains valid data by running it through the model validator functions
+        Second, build up a dict to make a SQL insert with (fields not tagged as model fields don't get persisted)
+        Finally, check that all required fields are in provided
+        """
         for key in payload:
             logging.error(key)
             logging.error(payload[key])
-            validate_function = getattr(self, key)
-            self.valid = validate_function(self, payload[key])
-        return self.fields
+            try:
+                validate_function = getattr(self, key)
+                self.valid = validate_function(self, payload[key])
+                self.payload[key] = payload[key]
+            except AttributeError as error:
+                log.warning(error)
+                log.warning("encountered unexpected key, continuing")
+                continue
+
+        for field in self.required_fields:
+            if field not in self.fields:
+                self.valid = False
+                log.error("Missing required fields!")
+                log.error("Fields Provided:")
+                log.error(self.fields)
+                log.error("Required Fields:")
+                log.error(self.required_fields)
+
+        return self.valid
 
 
 def model_field(field_name):

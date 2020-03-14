@@ -1,20 +1,25 @@
 import os
 import io
 import logging
-import uuid
 from flask import Flask, request, send_file
 from flask_restx import Api, Resource
 from dotenv import load_dotenv, find_dotenv
 
 from decorators import require_key
 from models.character import Character
+from db import HarperDB
 
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 rest = Api(app)
+hdb = HarperDB()
 
 debug = os.environ.get("DEBUG")
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 
 class Resource(Resource):
@@ -32,7 +37,10 @@ class CharacterCRUD(Resource):
         return {"name": "Marty McFly", "id": _id}
 
     def post(self):
-        _id = str(uuid.uuid4())
         new_character = Character()
-        msg = new_character.create({"name": "Sam McSam"})
-        return {"id": _id, "msg": msg}
+        valid = new_character.create(request.json)
+        if valid:
+            response = hdb.insert(new_character)
+            return {"id": new_character._id, "status": response}
+        else:
+            return "Could not create Character", 400
