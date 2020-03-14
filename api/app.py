@@ -16,6 +16,7 @@ rest = Api(app)
 
 debug = os.environ.get("DEBUG")
 
+
 class Resource(Resource):
     """
     Require that all resources apply the bearer token authentication
@@ -23,14 +24,15 @@ class Resource(Resource):
 
     method_decorators = [require_key]
 
+
 @rest.route("/character")
 class CharacterCRUD(Resource):
     def get(self):
         _id = request.args.get("id")
-        return {"name":"Marty McFly", "id":_id}
+        return {"name": "Marty McFly", "id": _id}
 
     def post(self):
         _id = str(uuid.uuid4())
         new_character = Character()
-        msg = new_character.create({"name":"Sam McSam"})
-        return {"id":_id, "msg":msg}
+        msg = new_character.create({"name": "Sam McSam"})
+        return {"id": _id, "msg": msg}

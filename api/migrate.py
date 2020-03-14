@@ -4,4 +4,4 @@ from db import HarperDB
 load_dotenv()
 
 database = HarperDB()
-database.migrate('init')
+database.migrate("init")
