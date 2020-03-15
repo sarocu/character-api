@@ -1,5 +1,5 @@
 # Character Creator API
-A simple python API for the Character Creator project. Currently in Flask for Azure testing
+A simple python API for the Character Creator project - a goofy little toy project for AWS and Azure research. It implements a DnD character creator.
 
 ## Local Usage
 This project is built using python 3.7 - set up an appropriate interpreter first. Then create a virtualenv and install dependencies, including this one:
@@ -35,7 +35,9 @@ pip list --format freeze --outdated | sed 's/=.*//g' | xargs -n1 pip install -U
 ```
 
 ## Authentication
-This API is only meant to be accessed via the superplus.io API - firewall rules should enforce this. Still as an added layer of precaution, a simple API key is used in the request to authenticate with the weather service. There is no database, so the key must be generated and set in the .env file of both the weather API and the superplus API.
+This is only a toy API so the authentication is simple - just a bearer token. A decorator is applied to all routes in the Flask App to enforce it's use. Create a new token, add it to the .env, start the docker services, and make sure it's included in all the REST requests. 
+
+When deploying make sure its set as an environment variable on the Azure Container Instance or AWS ECS.
 
 Generate a key as follows:
 ```python
@@ -91,8 +93,8 @@ TOKEN=$(aws ecr get-authorization-token --output text --query 'authorizationData
 docker images
 
 # using the image ID and the URI in the container registry, tag and push the image:
-docker tag 07b9057efb14 335664221718.dkr.ecr.us-west-2.amazonaws.com/weather-service
-docker push 335664221718.dkr.ecr.us-west-2.amazonaws.com/weather-service
+docker tag 07b905gefb14 xxxxxxx.dkr.ecr.us-west-2.amazonaws.com/api-service
+docker push xxxxxx.dkr.ecr.us-west-2.amazonaws.com/api-service
 ```
 
 # HarperDB Migrations
