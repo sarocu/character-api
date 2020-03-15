@@ -34,7 +34,13 @@ class Resource(Resource):
 class CharacterCRUD(Resource):
     def get(self):
         _id = request.args.get("id")
-        return {"name": "Marty McFly", "id": _id}
+        character = Character()
+        try:
+            character.payload = hdb.get(character, _id)
+            return character.payload
+        except Exception as error:
+            gunicorn_logger.error(error)
+            return "Could not retrieve character", 400
 
     def post(self):
         new_character = Character()

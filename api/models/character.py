@@ -142,7 +142,6 @@ class Character(HarperModel):
         ]
 
         points = args[1]
-        log.warning(points)
 
         for key in points:
             if key not in ability_check:

@@ -4,6 +4,7 @@ import yaml
 from functools import wraps
 import logging
 import uuid
+import json
 
 log = logging.getLogger("gunicorn.error")
 
@@ -84,6 +85,23 @@ class HarperDB:
             log.error(error)
             log.error(payload)
             return {"response": "error - could not persist"}
+
+    def get(self, model, _id):
+        """
+        Return a record via the ID field - assumes a single record will be returned
+        """
+        select_statement = "select * from {schema}.{table} where id = '{id}'".format(
+            schema=model.schema, table=model.table, id=_id
+        )
+        payload = {"operation": "sql", "sql": select_statement}
+        try:
+            response = requests.post(self.base_url, json=payload, auth=self.auth)
+            response.raise_for_status()
+            return json.loads(response.content)[0]
+        except requests.exceptions.HTTPError as error:
+            log.error(error)
+            log.error(payload)
+            return {"response": "error - could not retrieve record(s)"}
 
     def dispatch(self, migration):
         """
