@@ -109,11 +109,15 @@ class HarperModel:
         self.valid = True
         self.payload = {}
         self.required_fields = []
+        self.derived_fields = {}
         self._id = str(uuid.uuid4())
         self.payload["id"] = self._id
 
     def __name__(self):
         return "HarperModel"
+
+    def post_process(self):
+        pass
 
     def create(self, payload):
         """
@@ -126,12 +130,20 @@ class HarperModel:
             logging.error(payload[key])
             try:
                 validate_function = getattr(self, key)
+                log.warning(payload[key])
+                log.warning(type(payload[key]))
                 self.valid = validate_function(self, payload[key])
-                self.payload[key] = payload[key]
+                if key in self.fields:
+                    self.payload[key] = payload[key]
             except AttributeError as error:
                 log.warning(error)
                 log.warning("encountered unexpected key, continuing")
                 continue
+
+            if self.valid:
+                continue
+            else:
+                break
 
         for field in self.required_fields:
             if field not in self.fields:
@@ -142,6 +154,8 @@ class HarperModel:
                 log.error("Required Fields:")
                 log.error(self.required_fields)
 
+        self.payload.update(self.derived_fields)
+        self.post_process()
         return self.valid
 
 

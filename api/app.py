@@ -41,6 +41,10 @@ class CharacterCRUD(Resource):
         valid = new_character.create(request.json)
         if valid:
             response = hdb.insert(new_character)
-            return {"id": new_character._id, "status": response}
+            return {
+                "id": new_character._id,
+                "status": response,
+                "character": new_character.payload,
+            }
         else:
             return "Could not create Character", 400
