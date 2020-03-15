@@ -48,14 +48,9 @@ str(key) # cast to string and paste into the .env files
 ```
 
 ## Docker and Running in Production
-The Flask API is Dockerized so that the weather package is installed into the container and Gunicorn creates a socket that responds to requests. The goal with this is to run the Flask API using a container service and not to directly expose it to public HTTP. The network flow would go:
+The Flask API is Dockerized so that the package is installed into the container and Gunicorn creates a socket that responds to requests. The goal with this is to run the Flask API using a container service and not to directly expose it to public HTTP. The network flow would go:
 ```bash
 user HTTP request -> VPC Subnet -> ECS/Fargate -> Gunicorn -> Flask API
-```
-
-For the weather service to be installed correctly, the requirements.txt file should **not** install the package, rather the Dockerfile copies the package to a directory in the container and installs it with a
-```bash
-pip install -e .
 ```
 
 Nominally, the app is running on port 8000 inside the container, and Docker-Compose maps it to 8000 on the host. This is arbitrary.
@@ -63,7 +58,7 @@ Nominally, the app is running on port 8000 inside the container, and Docker-Comp
 ### Fargate
 In production, the API is hosted in a Docker container on AWS Fargate - a service for abstracting EC2 management away from using the container service. A cluster of containers using the Docker image is managed by AWS according to load (each container gets a set memory and CPU credit limit) as defined by a task definition.
 
-In addition to specifying memory and CPU limits, the task definition is used to pass environment variables to the Docker container and the specify the startup of the container using Docker commands and entrypoints. For the Weather service, specify the entrypoint as:
+In addition to specifying memory and CPU limits, the task definition is used to pass environment variables to the Docker container and the specify the startup of the container using Docker commands and entrypoints. For the API service, specify the entrypoint as:
 ```bash
 sh,-c
 ```
