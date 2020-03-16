@@ -62,4 +62,4 @@ class Equipment(HarperModel):
 
     @model_field("weight")
     def weight(self, value):
-        return isinstance(value, int)
+        return isinstance(value, float)

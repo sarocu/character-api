@@ -1,0 +1,5 @@
+﻿name,equip_type,base_cost,weight
+Silver Coin,currency,0.1,0
+Gold Coin,currency,1,0
+Arrows,ammunition,0.05,0.05
+Sling Bullets,ammunition,0,0.05
