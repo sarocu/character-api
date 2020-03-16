@@ -103,6 +103,27 @@ class HarperDB:
             log.error(payload)
             return {"response": "error - could not retrieve record(s)"}
 
+    def get_list(self, model, model_filter, field):
+        """
+
+        """
+        select_statement = "select * from {schema}.{table} where {field} = '{model_filter}'".format(
+            schema=model.schema,
+            table=model.table,
+            field=field,
+            model_filter=model_filter,
+        )
+        payload = {"operation": "sql", "sql": select_statement}
+        try:
+            log.warning(payload)
+            response = requests.post(self.base_url, json=payload, auth=self.auth)
+            response.raise_for_status()
+            return json.loads(response.content)
+        except requests.exceptions.HTTPError as error:
+            log.error(error)
+            log.error(payload)
+            return {"response": "error - could not retrieve record(s)"}
+
     def dispatch(self, migration):
         """
         Dispatch method for performing migrations
@@ -144,12 +165,8 @@ class HarperModel:
         Finally, check that all required fields are in provided
         """
         for key in payload:
-            logging.error(key)
-            logging.error(payload[key])
             try:
                 validate_function = getattr(self, key)
-                log.warning(payload[key])
-                log.warning(type(payload[key]))
                 self.valid = validate_function(self, payload[key])
                 if key in self.fields:
                     self.payload[key] = payload[key]
@@ -161,6 +178,7 @@ class HarperModel:
             if self.valid:
                 continue
             else:
+                log.error("field validation failed: {}".format(key))
                 break
 
         for field in self.required_fields:

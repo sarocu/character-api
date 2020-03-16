@@ -7,6 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 
 from decorators import require_key
 from models.character import Character
+from models.equipment import Equipment
 from db import HarperDB
 
 load_dotenv(find_dotenv())
@@ -54,3 +55,41 @@ class CharacterCRUD(Resource):
             }
         else:
             return "Could not create Character", 400
+
+
+@rest.route("/equipment")
+class EquipmentCRUD(Resource):
+    def get(self):
+        _id = request.args.get("id")
+        equip = Equipment()
+        try:
+            equip.payload = hdb.get(equip, _id)
+            return equip.payload
+        except Exception as error:
+            gunicorn_logger.error(error)
+            return "Could not retrieve equipment", 400
+
+    def post(self):
+        new_equipment = Equipment()
+        valid = new_equipment.create(request.json)
+        if valid:
+            response = hdb.insert(new_equipment)
+            return {
+                "id": new_equipment._id,
+                "status": response,
+                "equipment": new_equipment.payload,
+            }
+        else:
+            return "Could not create equipment", 400
+
+
+@rest.route("/equipment-library")
+class EquipmentLibrary(Resource):
+    def get(self):
+        equip_type = request.args.get("equip_type")
+        try:
+            response = hdb.get_list(Equipment(), equip_type, "equip_type")
+            return {"equipment": response}
+        except Exception as error:
+            gunicorn_logger.error(error)
+            return "Could not retrieve equipment", 400

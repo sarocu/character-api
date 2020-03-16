@@ -10,3 +10,7 @@ init:
       schema: dungeonmaster
       attributes:
         - id
+    campaign:
+      schema: dungeonmaster
+      attributes:
+        - id

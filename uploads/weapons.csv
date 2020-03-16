@@ -1,0 +1,7 @@
+﻿name,equip_type,base_cost,weight,damage,damage_type,properties,range,hands
+Club,simple-melee,0.1,2,1d4,bludgeoning,light,0,1
+Dagger,simple-melee,1,1,1d4,piercing,light,0,1
+Sling,simple-ranged,0.1,0,1d4,bludgeoning,ammunition,30,1
+Short Sword,martial-melee,10,2,1d6,piercing,light,0,1
+Greatsword,martial-melee,50,6,2d6,slashing,heavy,0,2
+Longbow,martial-ranged,50,2,1d8,piercing,ammunition,150,2

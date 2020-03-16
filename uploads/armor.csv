@@ -1,0 +1,13 @@
+﻿name,equip_type,base_cost,weight,armor_class,stealth
+Padded Armore,light-armor,5,8,11,disadvantage
+Leather Armor,light-armor,10,10,11,
+Studded Armor,light-armor,45,12,13,
+Hide Armor,medium-armor,10,12,12,
+Chain Shirt,medium-armor,50,20,13,
+Scale Mail,medium-armor,50,45,14,disadvantage
+Breastplate,medium-armor,400,20,14,
+Half Plate Armor,medium-armor,750,40,15,disadvantage
+Ring Mail,heavy-armor,30,40,14,disadvantage
+Splint Armor,heavy-armor,200,60,17,disadvantage
+Chain Mail,heavy-armor,75,55,16,disadvantage
+Plate Armor,heavy-armor,1500,65,18,disadvantage
