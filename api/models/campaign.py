@@ -14,12 +14,18 @@ class Campaign(HarperModel):
 
     def post_process(self):
         total_weight = 0
-        total_capacity = self.payload["character"]["strength"] * 5.0
+        strength = self.payload["character"]["strength"]
         for item in self.payload["current_pack"]:
             total_weight += item["weight"]
 
-        if total_weight > total_capacity:
+        if total_weight > strength * 15.0:
+            self.derived_fields["encumberance"] = "cannot-move"
+        elif total_weight > strength * 10.0:
+            self.derived_fields["encumberance"] = "heavily-encumbered"
+        elif total_weight > strength * 5.0:
             self.derived_fields["encumberance"] = "encumbered"
+        else:
+            self.derived_fields["encumberance"] = "NA"
 
         return True
 
